@@ -1,0 +1,32 @@
+  ___        ___          __                      
+ ( _ )      / _ )___ ____/ /_  _________________/|
+/ _  | _   / _  / -_) __/ __/ /___/___/___/___> _<
+\___/ (_) /____/\__/_/  \__/                  |/  
+
+
+---------bert_test.V2.py--------
+1. Loads module data
+2. Combines syllabus and objectives
+3. Extracts and simplifies academic year
+4. Runs BERTopic separately for each 
+   faculty/school to find emerging 
+   themes over time.
+5. Saves HTML charts and BERTopic Models 
+   for each faculty/school
+
+-----------bert_test.py----------
+1. Loads module data
+2. Runs BERTopic on all module text data
+3. Saves interactive HTML timeline of
+   topics/themes overtime
+
+   WW
+  /__\
+ | oo |
+(|_()_|)
+  \__/
+ /|\/|\
+||||||||
+||||||||
+|||||||| 
+
