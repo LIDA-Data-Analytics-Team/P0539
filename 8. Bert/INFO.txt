@@ -4,6 +4,10 @@
 \___/ (_) /____/\__/_/  \__/                  |/  
 
 
+   
+   Both using default sentence_transformore/
+   embedding : all-MiniLM-L6-v2
+
 ---------bert_test.V2.py--------
 1. Loads module data
 2. Combines syllabus and objectives
