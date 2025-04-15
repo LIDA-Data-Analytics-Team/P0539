@@ -5,7 +5,7 @@
 
 
    
-   Both using default sentence_transformore/
+   Both using default sentence_transformer/
    embedding : all-MiniLM-L6-v2
 
 ---------bert_test.V2.py--------
