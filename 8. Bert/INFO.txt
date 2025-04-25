@@ -10,6 +10,8 @@ sentence_transformer/embedding : all-MiniLM-L6-v2
 
 ---------bert_test.V3.1.py--------
 
+##Currently broken - Syntax issue##
+
 1. Loads module data
 2. Combines syllabus and objectives
 3. Extracts and simplifies academic year
@@ -23,6 +25,8 @@ sentence_transformer/embedding : all-MiniLM-L6-v2
    for each faculty/school
 
 ---------bert_test.V3.py--------
+
+##Offline version of V2##
 
 1. Loads module data
 2. Combines syllabus and objectives
