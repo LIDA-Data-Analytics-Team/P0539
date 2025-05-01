@@ -19,7 +19,6 @@ Note: Needs sufficient text data
 5. Runs BERTopic separately for each 
    faculty/school to find emerging 
    themes over time.
-6. Uses custom keywords to semi-super
 7. Saves the top 10 topics as
    HTML charts and BERTopic Models 
    for each faculty/school
