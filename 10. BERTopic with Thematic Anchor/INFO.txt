@@ -1,0 +1,64 @@
+   _______       ____  __________  ______            _         ___               __              
+  <  / __ \     / __ )/ ____/ __ \/_  __/___  ____  (_)____   /   |  ____  _____/ /_  ____  _____
+  / / / / /    / __  / __/ / /_/ / / / / __ \/ __ \/ / ___/  / /| | / __ \/ ___/ __ \/ __ \/ ___/
+ / / /_/ /    / /_/ / /___/ _, _/ / / / /_/ / /_/ / / /__   / ___ |/ / / / /__/ / / / /_/ / /    
+/_/\____(_)  /_____/_____/_/ |_| /_/  \____/ .___/_/\___/  /_/  |_/_/ /_/\___/_/ /_/\____/_/     
+
+                                          /_/                                                  
+                                                                   
+--⚓bertopic_anchor_v2_cleaned_all-miniLM-L6-v2.py⚓--
+
+Note: Needs sufficient text data
+
+1. Loads module data
+2. Combines syllabus and objectives
+3. Extracts and simplifies academic year
+4. Loads all-MiniLM-L6-v2 sentence transformer 
+   locally 
+5. Loads custom theme words to guide BERTopic
+   which guides the model. Each column represents 
+   a theme and the values are keywords that
+   semantically describe it.
+6. Creates 'anchor' documents from keywords which steers
+   the topic modelling to align with the themes 
+7. Runs BERTopic separately for each 
+   faculty/school to find 
+   themes over time.
+8. Uses UMAP and HDBSCAN for clustering.
+      - UMAP for dimensionality reduction
+      - HDBSCAN for density-based topic clustering
+      - Ability to set parameters:
+            - n_neighbors
+            - min_cluster_size
+9. Saves the top 10 topics as
+   HTML charts and BERTopic Models 
+   for each faculty/school
+
+--------theme_matcher_v22.py--------
+
+1. Loads BERTopic models derived from
+   bertopic_anchor_v2_cleaned_all-miniLM-L6-v2.py
+2. Skips anchor documents
+3. Loads keyword list CR_Keywords_clean.csv
+   into a string per theme. This is utilised
+   as a thematic anchor for finding matches
+   between the module text and themes.
+4. Compares topic keywords with theme
+   lists using **cosine similarity**
+   for top 20 words in each
+5. Labels each topic with it's best-matching
+   theme
+6. Saves CSV report with:
+	1. Topic ID
+	2. Top words
+	3. Best-matched theme
+	4. Frequency count of the topic 
+	5. Cosine semantic similarity score
+
+--------------------------------------------
+
+
+
+
+
+
