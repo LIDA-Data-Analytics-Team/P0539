@@ -1,0 +1,63 @@
+.---------------------------.
+| 11. BERTopic Multi-Anchor |
+'---------------------------'
+
+--------------------bertanchorv7.py------------------------
+
+1. Loads module data
+2. Combines syllabus and objectives
+3. Extracts and simplifies academic year
+4. Loads all-MiniLM-L6-v2 sentence transformer 
+   locally 
+5. Loads custom theme words to guide BERTopic
+   which guides the model. Each column represents 
+   a theme and the values are keywords that
+   semantically describe it.
+6. Creates 3 'anchor' sentences from keywords which steers
+   the topic modelling to align with the themes.
+   Anchor documents are injected as additional rows with "0000" 
+   as year and is later ignored for analysis. 
+7. Runs BERTopic separately for each 
+   faculty/school to find 
+   themes over time.
+   Skips groups that have already been processed
+   in case running the code is interrupted.  
+8. Uses UMAP and HDBSCAN for clustering.
+      - UMAP for dimensionality reduction
+      - HDBSCAN for density-based topic clustering
+      - Ability to set parameters:
+            - n_neighbors
+            - min_cluster_size
+9. Matches topics to theme using cosine similarity
+   to label bar chart in step 10
+9. Saves the top 10 topics as
+   HTML charts, BERTopic Models and frequency 
+   bar chart
+   for each faculty/school
+
+-------------theme_matcher_v3.py----------------------------
+
+1. Loads BERTopic models derived from
+   bertanchorv7.py
+2. Skips anchor documents
+3. Loads keyword list CR_Keywords_clean.csv
+   into structured sentences per theme. 
+   eg "Theme concepts include : keyword 1, keyword2, etc"
+   
+4. Uses al-MiniLM-L6-v2 sentence transformer
+   to generate embeddings for theme
+   sentences
+5. Compares topic keywords with theme
+   lists using **cosine similarity**
+   for top 20 words in each topic (record >0.3 similarity score)
+7. Labels each topic with it's best-matching
+   theme or unmatched if below threshold
+6. Saves CSV report with:
+        1. Faculty group
+	2. Topic ID
+	3. Top 20 words
+	4. Best-matched theme
+	5. Frequency count of the topic 
+	6. Cosine semantic similarity score
+
+--------------------------------------------

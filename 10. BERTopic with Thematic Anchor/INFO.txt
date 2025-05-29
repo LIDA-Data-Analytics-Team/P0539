@@ -19,7 +19,7 @@ Note: Needs sufficient text data
    which guides the model. Each column represents 
    a theme and the values are keywords that
    semantically describe it.
-6. Creates 'anchor' documents from keywords which steers
+6. Creates a 'anchor' document from keywords which steers
    the topic modelling to align with the themes 
 7. Runs BERTopic separately for each 
    faculty/school to find 
@@ -34,7 +34,7 @@ Note: Needs sufficient text data
    HTML charts and BERTopic Models 
    for each faculty/school
 
---------theme_matcher_v22.py--------
+--------theme_matcher_v2.2.py--------
 
 1. Loads BERTopic models derived from
    bertopic_anchor_v2_cleaned_all-miniLM-L6-v2.py
