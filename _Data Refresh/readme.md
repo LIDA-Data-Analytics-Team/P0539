@@ -12,21 +12,21 @@ You will need to be granted access to both databases in order to pull data from 
 
 ## Script execution  
 
-Before executing the script check how your system date is stored in cmd.  
-From a `cmd.exe` console run the command:  
-```bat
-echo %date%
-```
-
-If the result is of the format `dd/mm/yyyy` then the script needs to set the `extractDate` variable like so:
-```bat
-set extractDate=%date:~6,4%-%date:~3,2%-%date:~0,2%
-```
-If the result is of the format `Day mm/dd/yyyy` then the script needs to set the `extractDate` variable like so:
-```bat
-set extractDate=%date:~10,4%-%date:~4,2%-%date:~7,2%
-```
-Edit the *.bat file as appropriate.  
+> [!IMPORTANT]  
+> Before executing the script check how your system date is stored in cmd.  
+> From a `cmd.exe` console run the command:  
+> ```bat
+> echo %date%
+> ```
+> If the result is of the format `dd/mm/yyyy` then the script needs to set the `extractDate` variable like so:
+> ```bat
+> set extractDate=%date:~6,4%-%date:~3,2%-%date:~0,2%
+> ```
+> If the result is of the format `Day mm/dd/yyyy` then the script needs to set the `extractDate` variable like so:
+> ```bat
+> set extractDate=%date:~10,4%-%date:~4,2%-%date:~7,2%
+> ```
+> Edit the *.bat file as appropriate.  
 
 Double click [P0539_data_import.bat](P0539_data_import.bat) or from a `cmd.exe` console navigate to the folder that contains the file and run it.  
 
@@ -34,8 +34,10 @@ The batch file will execute the script that uses `I:\P0539\BCP Update\` as a tem
 
 It will also create a date stamped log file output of the process in the same location as the batch file.  
 
-!! DO NOT CLOSE THE CONSOLE WINDOW DURING EXECUTION !!  
-This will interrupt the data migration in an uncontrolled manner, meaning data will be duplicated if the script is rerun. It's really not that sophisticated a script!  
+> [!CAUTION]  
+> DO NOT CLOSE THE CONSOLE WINDOW DURING EXECUTION  
+> This will interrupt the data migration in an uncontrolled manner, meaning data will be duplicated if the script is rerun.  
+> It's really not that sophisticated a script!  
 
 Each table export query uses the latest [Extract_Date_ID] to identify records required for import, i.e.  
 ```sql
@@ -98,3 +100,4 @@ The tables list variable must conatin the table names (without schema) in the fo
 |-r|Specifies row terminator|creating format files|
 |-G|Use Microsoft Entra authentication|creating format files, importing data to destination|
 |-T|Use Integrated Security|exporting data from source|
+
