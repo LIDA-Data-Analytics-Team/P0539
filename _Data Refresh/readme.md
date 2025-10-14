@@ -8,10 +8,27 @@ This import can be achieved using the [BCP utility](https://learn.microsoft.com/
 2. Update latest extraction table
 
 The script needs to be executed from DAT02 so that both databases can be accessed.  
+You will need to be granted access to both databases in order to pull data from one to the other.  
 
 ## Script execution  
 
-From a `cmd.exe` console navigate to the folder that contains the [P0539_data_import.bat](P0539_data_import.bat) and run it.  
+Before executing the script check how your system date is stored in cmd.  
+From a `cmd.exe` console run the command:  
+```bat
+echo %date%
+```
+
+If the result is of the format `dd/mm/yyyy` then the script needs to set the `extractDate` variable like so:
+```bat
+set extractDate=%date:~6,4%-%date:~3,2%-%date:~0,2%
+```
+If the result is of the format `Day mm/dd/yyyy` then the script needs to set the `extractDate` variable like so:
+```bat
+set extractDate=%date:~10,4%-%date:~4,2%-%date:~7,2%
+```
+Edit the *.bat file as appropriate.  
+
+Double click [P0539_data_import.bat](P0539_data_import.bat) or from a `cmd.exe` console navigate to the folder that contains the file and run it.  
 
 The batch file will execute the script that uses `I:\P0539\BCP Update\` as a temporary staging area for flat files generated from the source database, importing them into the destination and deleting them as each table migration completes.  
 

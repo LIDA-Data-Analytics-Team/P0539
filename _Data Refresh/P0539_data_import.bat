@@ -1,7 +1,14 @@
 @echo off
 
 REM Define and create the location for storage of temporary extraction files. 
+REM Create a date stamp string in format 'yyyy-mm-dd'
+
+REM If system date is stored in format '14/10/2025` then use this
 set extractDate=%date:~6,4%-%date:~3,2%-%date:~0,2%
+
+REM If system date is stored in format 'Tue 10/14/2025` then use this:
+REM set extractDate=%date:~10,4%-%date:~4,2%-%date:~7,2%
+
 set extractPath=I:\P0539\BCP Update\%extractDate%\
 if not exist "%extractPath%" mkdir "%extractPath%"
 
