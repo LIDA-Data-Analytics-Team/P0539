@@ -50,5 +50,5 @@ for %%t in (%tables%) do (
 )
 
 REM Delete the folder used to contain the extraction flat files.
-del "%extractPath%"
+del "%extractPath%" /Q
 echo "%extractPath%" folder deleted.

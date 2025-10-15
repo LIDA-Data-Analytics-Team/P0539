@@ -104,4 +104,4 @@ The tables list variable must conatin the table names (without schema) in the fo
 |-r|Specifies row terminator|creating format files|
 |-G|Use Microsoft Entra authentication|creating format files, importing data to destination|
 |-T|Use Integrated Security|exporting data from source|
-
+|/Q|Quiet mode, do not ask if ok to delete on global wildcard|deleting staging directory|
