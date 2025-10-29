@@ -41,7 +41,7 @@ for %%t in (%tables%) do (
 	bcp "select * from %sourceSchema%.%%t where [Extract_Date_ID] = (select Extract_Date_ID from [CR_LIDA_Presentation].[CR_LIDA].[Extract_Date] where [Most_recent_Extract] = 1)" queryout "%extractPath%%%t.bcp" -S BIDA1-PE01 -d CR_LIDA_Presentation -T -f "%extractPath%%%t_format.xml"
 	echo %sourceSchema%.%%t extracted.
 	echo Importing from %extractPath%%%t.bcp to %destinationSchema%.%%t.
-	bcp %destinationSchema%.%%t in "%extractPath%%%t.bcp" -S az-lrdp-p0539v01-db.database.windows.net -d vre-p0539v01-db -G -f "%extractPath%%%t_format.xml"
+	bcp %destinationSchema%.%%t in "%extractPath%%%t.bcp" -S az-lrdp-p0539v01-db.database.windows.net -d vre-p0539v01-db -G -E -f "%extractPath%%%t_format.xml"
 	echo %%t.bcp imported.
 	del "%extractPath%%%t_format.xml"
 	echo "%extractPath%%%t_format.xml" file deleted.
@@ -52,3 +52,4 @@ for %%t in (%tables%) do (
 REM Delete the folder used to contain the extraction flat files.
 rmdir "%extractPath%" 
 echo "%extractPath%" folder deleted.
+
