@@ -64,8 +64,6 @@ Worth checking that the `[Extract_Date_ID]` matches up between source and destin
 `[Extract_Date_ID]` is an auto incrementing [identity](https://learn.microsoft.com/en-us/sql/t-sql/statements/create-table-transact-sql-identity-property) field in the `[dbo].[Extract_Date]` table, but not in any of the other tables. If BIDA created failed extracts then the possibility exists that some integers will be absent from the sequence. For example, data will be imported with an `[Extract_Date_ID] = 7` but the next record in the `[dbo].[Extract_Date]` table could be `[Extract_Date_ID] = 4`.  
 In this case, we will need to add dummy records until the required `[Extract_Date_ID]` is reached and then delete the unwanted records. The deletion will take some time as foriegn key contraints will need to be checked before the transaction completes.  
 
-**TODO**: Consider altering the script to include a [forced identity insert flag [-E]](https://learn.microsoft.com/en-us/sql/tools/bcp-utility?view=sql-server-ver17&tabs=windows#-e) on at least the first `[Extract_Date]` table.  
-
 ## Databases
 ||Database Server|Database|Authentication type|Table Schema|
 |---|---|---|---|---|
@@ -105,5 +103,7 @@ The tables list variable must conatin the table names (without schema) in the fo
 |-t|Specifies field terminator|creating format files|
 |-r|Specifies row terminator|creating format files|
 |-G|Use Microsoft Entra authentication|creating format files, importing data to destination|
+|-E|Force identity insert|importing data to destination|
 |-T|Use Integrated Security|exporting data from source|
 |/Q|Quiet mode, do not ask if ok to delete on global wildcard|deleting staging directory|
+
