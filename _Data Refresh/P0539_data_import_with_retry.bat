@@ -80,11 +80,13 @@ for %%t in (%tables%) do (
 			echo ERROR: Failed to export from Source table to temp file using format file: !table!.bcp NOT created
 			)
 		)
-	
-	echo INFO: Attempting to import from !extractPath!!table!.bcp to !destinationSchema!.!table!
+	else (
+		echo INFO: Not attempting to export from Source table to temp file as previous step failed
+		)
 
 	Set /a import_success=1
 	if !export_success! EQU 0 (			REM Only attempt if previous step successful
+		echo INFO: Attempting to import from !extractPath!!table!.bcp to !destinationSchema!.!table!
 		for /L %%w in (1,1,5) do ( 		REM retry five times
 			REM Import from temp file to destination table
 			if !import_success! NEQ 0 (
@@ -99,12 +101,18 @@ for %%t in (%tables%) do (
 			echo ERROR: Failed to import from temp file to destination table: !destinationSchema!.!table!
 			)
 		)
+	else (
+		echo INFO: Not attempting to Import from temp file to destination table as previous step failed
+		)
 
 	if !import_success! EQU 0 (			REM Only attempt if previous step successful
 		del "!extractPath!!table!_format.xml"
 		echo INFO: !extractPath!!table!_format.xml file deleted.
 		del "!extractPath!!table!.bcp"
 		echo INFO: !extractPath!!table!.bcp file deleted.
+		)
+	else (
+		echo INFO: Not deleting format or temp extract files as previous step failed
 		)
 	)
 
