@@ -38,8 +38,8 @@ REM
 REM Odd seperators are needed because the data contains many of the commonly used ones. 
 
 for %%t in (%tables%) do (
-	echo INFO: Attempting to extract from %sourceSchema%.%%t to %extractPath%%%t.bcp
 	set table=%%t
+	echo INFO: Attempting to extract from !sourceSchema!.!table! to !extractPath!!table!.bcp
 
 	Set /a format_success=1
 	if exist !extractPath!!table!_format.xml (	REM Skip format file creation if file already exists
