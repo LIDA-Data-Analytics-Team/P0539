@@ -4,10 +4,10 @@ REM Define and create the location for storage of temporary extraction files.
 REM Create a date stamp string in format 'yyyy-mm-dd'
 
 REM If system date is stored in format '14/10/2025` then use this
-set extractDate=%date:~6,4%-%date:~3,2%-%date:~0,2%
+REM set extractDate=%date:~6,4%-%date:~3,2%-%date:~0,2%
 
 REM If system date is stored in format 'Tue 10/14/2025` then use this:
-REM set extractDate=%date:~10,4%-%date:~4,2%-%date:~7,2%
+set extractDate=%date:~10,4%-%date:~4,2%-%date:~7,2%
 
 set extractPath=I:\P0539\BCP Update\%extractDate%\
 if not exist "%extractPath%" mkdir "%extractPath%"
@@ -42,9 +42,10 @@ for %%t in (%tables%) do (
 	echo INFO: Attempting to extract from %sourceSchema%.%%t to %extractPath%%%t.bcp.
 	
 	Set /a format_success=1
-	if exist %extractPath%%%t_format.xml	REM Skip format file creation if file already exists
+	if exist %extractPath%%%t_format.xml (	REM Skip format file creation if file already exists
 		set /a format_success=0
 		echo INFO: Format file already exists, skipping creation of %%t_format.xml
+		)	
 	for /L %%w in (1,1,5) do ( 				REM retry five times
 		REM Create format file from destination table
 		if !format_success! NEQ 0 (
@@ -61,9 +62,10 @@ for %%t in (%tables%) do (
 
 	Set /a export_success=1
 	if !format_success! EQU 0 (			REM Only attempt if previous step successful
-		if exist %extractPath%%%t.bcp	REM Skip export if temp file already exists
+		if exist %extractPath%%%t.bcp (	REM Skip export if temp file already exists
 			set /a export_success=0
 			echo INFO: Temp extract file already exists, skipping data export to %%t.bcp
+			)
 		for /L %%w in (1,1,5) do ( 		REM retry five times
 			REM Export from Source table to temp file using format file
 			if !export_success! NEQ 0 (
@@ -108,6 +110,8 @@ for %%t in (%tables%) do (
 
 REM Delete the folder used to contain the extraction flat files. Will fail if not empty. 
 rmdir "%extractPath%" 
-echo %extractPath% folder deleted
+if not exist "%extractPath%" (
+	echo %extractPath% folder deleted
+	)
 
 EndLocal
