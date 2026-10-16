@@ -53,9 +53,9 @@ for %%t in (%tables%) do (
 			echo INFO: Format file created from destination table: %destinationSchema%.%%t
 			)
 		)
-		if !format_success! NEQ 0 (
-			echo ERROR: Failed to create format file from destination table: %destinationSchema%.%%t
-		)
+	if !format_success! NEQ 0 (
+		echo ERROR: Failed to create format file from destination table: %destinationSchema%.%%t
+	)
 
 	Set /a export_success=1
 	if !format_success! EQU 0 (			REM Only attempt if previous step successful
@@ -70,9 +70,9 @@ for %%t in (%tables%) do (
 				echo INFO: Exported from Source table to temp file using format file: %%t.bcp created
 				)
 			)
-			if !export_success! NEQ 0 (
-				echo ERROR: Failed to export from Source table to temp file using format file: %%t.bcp NOT created
-			)
+		if !export_success! NEQ 0 (
+			echo ERROR: Failed to export from Source table to temp file using format file: %%t.bcp NOT created
+		)
 	)
 	
 	echo INFO: Attempting to import from %extractPath%%%t.bcp to %destinationSchema%.%%t
@@ -87,9 +87,9 @@ for %%t in (%tables%) do (
 				echo INFO: Imported from temp file to destination table: %destinationSchema%.%%t
 				)
 			)
-			if !import_success! NEQ 0 (
-				echo ERROR: Failed to import from temp file to destination table: %destinationSchema%.%%t
-			)
+		if !import_success! NEQ 0 (
+			echo ERROR: Failed to import from temp file to destination table: %destinationSchema%.%%t
+		)
 	)
 
 	if !import_success! EQU 0 (			REM Only attempt if previous step successful
