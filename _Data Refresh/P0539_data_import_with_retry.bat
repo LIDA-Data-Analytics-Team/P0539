@@ -49,13 +49,15 @@ for %%t in (%tables%) do (
 		REM Create format file from destination table
 		if !format_success! NEQ 0 (
 			bcp %destinationSchema%.%%t format nul -c -x -f "%extractPath%%%t_format.xml" -S az-lrdp-p0539v01-db.database.windows.net -d vre-p0539v01-db -G -t~~~~~ -r^^^^^^^^^^
-			if !ERRORLEVEL! EQU 0 set /a format_success=0
-			echo INFO: Format file created from destination table: %destinationSchema%.%%t
+			if !ERRORLEVEL! EQU 0 (
+				set /a format_success=0
+				echo INFO: Format file created from destination table: %destinationSchema%.%%t
+				)
 			)
 		)
 	if !format_success! NEQ 0 (
 		echo ERROR: Failed to create format file from destination table: %destinationSchema%.%%t
-	)
+		)
 
 	Set /a export_success=1
 	if !format_success! EQU 0 (			REM Only attempt if previous step successful
@@ -66,14 +68,16 @@ for %%t in (%tables%) do (
 			REM Export from Source table to temp file using format file
 			if !export_success! NEQ 0 (
 				bcp "select * from %sourceSchema%.%%t where [Extract_Date_ID] = (select Extract_Date_ID from [CR_LIDA_Presentation].[CR_LIDA].[Extract_Date] where [Most_recent_Extract] = 1)" queryout "%extractPath%%%t.bcp" -S BIDA1-PE01 -d CR_LIDA_Presentation -T -f "%extractPath%%%t_format.xml"
-				if !ERRORLEVEL! EQU 0 set /a export_success=0
-				echo INFO: Exported from Source table to temp file using format file: %%t.bcp created
+				if !ERRORLEVEL! EQU 0 (
+					set /a export_success=0
+					echo INFO: Exported from Source table to temp file using format file: %%t.bcp created
+					)
 				)
 			)
 		if !export_success! NEQ 0 (
 			echo ERROR: Failed to export from Source table to temp file using format file: %%t.bcp NOT created
+			)
 		)
-	)
 	
 	echo INFO: Attempting to import from %extractPath%%%t.bcp to %destinationSchema%.%%t
 
@@ -83,25 +87,27 @@ for %%t in (%tables%) do (
 			REM Import from temp file to destination table
 			if !import_success! NEQ 0 (
 				bcp %destinationSchema%.%%t in "%extractPath%%%t.bcp" -S az-lrdp-p0539v01-db.database.windows.net -d vre-p0539v01-db -G -E -f "%extractPath%%%t_format.xml"
-				if !ERRORLEVEL! EQU 0 set /a import_success=0
-				echo INFO: Imported from temp file to destination table: %destinationSchema%.%%t
+				if !ERRORLEVEL! EQU 0 (
+					set /a import_success=0
+					echo INFO: Imported from temp file to destination table: %destinationSchema%.%%t
+					)
 				)
 			)
 		if !import_success! NEQ 0 (
 			echo ERROR: Failed to import from temp file to destination table: %destinationSchema%.%%t
+			)
 		)
-	)
 
 	if !import_success! EQU 0 (			REM Only attempt if previous step successful
 		del "%extractPath%%%t_format.xml"
-		echo INFO: "%extractPath%%%t_format.xml" file deleted.
+		echo INFO: %extractPath%%%t_format.xml file deleted.
 		del "%extractPath%%%t.bcp"
-		echo INFO: "%extractPath%%%t.bcp" file deleted.
+		echo INFO: %extractPath%%%t.bcp file deleted.
+		)
 	)
-)
 
 REM Delete the folder used to contain the extraction flat files. Will fail if not empty. 
 rmdir "%extractPath%" 
-echo "%extractPath%" folder deleted.
+echo %extractPath% folder deleted
 
 EndLocal
