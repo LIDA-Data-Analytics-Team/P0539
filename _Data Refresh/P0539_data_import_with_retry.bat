@@ -42,7 +42,10 @@ for %%t in (%tables%) do (
 	echo INFO: Attempting to extract from %sourceSchema%.%%t to %extractPath%%%t.bcp.
 	
 	Set /a format_success=1
-	for /L %%w in (1,1,5) do ( 		REM retry five times
+	if exist %extractPath%%%t_format.xml	REM Skip format file creation if file already exists
+		set /a format_success=0
+		echo INFO: Format file already exists, skipping creation of %%t_format.xml
+	for /L %%w in (1,1,5) do ( 				REM retry five times
 		REM Create format file from destination table
 		if !format_success! NEQ 0 (
 			bcp %destinationSchema%.%%t format nul -c -x -f "%extractPath%%%t_format.xml" -S az-lrdp-p0539v01-db.database.windows.net -d vre-p0539v01-db -G -t~~~~~ -r^^^^^^^^^^
@@ -56,16 +59,19 @@ for %%t in (%tables%) do (
 
 	Set /a export_success=1
 	if !format_success! EQU 0 (			REM Only attempt if previous step successful
+		if exist %extractPath%%%t.bcp	REM Skip export if temp file already exists
+			set /a export_success=0
+			echo INFO: Temp extract file already exists, skipping data export to %%t.bcp
 		for /L %%w in (1,1,5) do ( 		REM retry five times
 			REM Export from Source table to temp file using format file
 			if !export_success! NEQ 0 (
 				bcp "select * from %sourceSchema%.%%t where [Extract_Date_ID] = (select Extract_Date_ID from [CR_LIDA_Presentation].[CR_LIDA].[Extract_Date] where [Most_recent_Extract] = 1)" queryout "%extractPath%%%t.bcp" -S BIDA1-PE01 -d CR_LIDA_Presentation -T -f "%extractPath%%%t_format.xml"
 				if !ERRORLEVEL! EQU 0 set /a export_success=0
-				echo INFO: Exported from Source table to temp file using format file: %extractPath%%%t.bcp created
+				echo INFO: Exported from Source table to temp file using format file: %%t.bcp created
 				)
 			)
 			if !export_success! NEQ 0 (
-				echo ERROR: Failed to export from Source table to temp file using format file: %extractPath%%%t.bcp NOT created
+				echo ERROR: Failed to export from Source table to temp file using format file: %%t.bcp NOT created
 			)
 	)
 	
