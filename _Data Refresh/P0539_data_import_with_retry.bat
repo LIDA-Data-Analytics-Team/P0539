@@ -1,4 +1,5 @@
 @echo off
+SetLocal EnableDelayedExpansion
 
 REM Define and create the location for storage of temporary extraction files. 
 REM Create a date stamp string in format 'yyyy-mm-dd'
@@ -36,82 +37,81 @@ REM	- deletes both format and data files
 REM 
 REM Odd seperators are needed because the data contains many of the commonly used ones. 
 
-SetLocal EnableDelayedExpansion
-
 for %%t in (%tables%) do (
-	echo INFO: Attempting to extract from %sourceSchema%.%%t to %extractPath%%%t.bcp.
-	
+	echo INFO: Attempting to extract from %sourceSchema%.%%t to %extractPath%%%t.bcp
+	set table=%%t
+
 	Set /a format_success=1
-	if exist %extractPath%%%t_format.xml (	REM Skip format file creation if file already exists
+	if exist !extractPath!!table!_format.xml (	REM Skip format file creation if file already exists
 		set /a format_success=0
-		echo INFO: Format file already exists, skipping creation of %%t_format.xml
+		echo INFO: Format file already exists, skipping creation of !table!_format.xml
 		)	
 	for /L %%w in (1,1,5) do ( 				REM retry five times
 		REM Create format file from destination table
 		if !format_success! NEQ 0 (
-			bcp %destinationSchema%.%%t format nul -c -x -f "%extractPath%%%t_format.xml" -S az-lrdp-p0539v01-db.database.windows.net -d vre-p0539v01-db -G -t~~~~~ -r^^^^^^^^^^
+			bcp !destinationSchema!.!table! format nul -c -x -f "!extractPath!!table!_format.xml" -S az-lrdp-p0539v01-db.database.windows.net -d vre-p0539v01-db -G -t~~~~~ -r^^^^^^^^^^
 			if !ERRORLEVEL! EQU 0 (
 				set /a format_success=0
-				echo INFO: Format file created from destination table: %destinationSchema%.%%t
+				echo INFO: Format file created from destination table: !destinationSchema!.!table!
 				)
 			)
 		)
 	if !format_success! NEQ 0 (
-		echo ERROR: Failed to create format file from destination table: %destinationSchema%.%%t
+		echo ERROR: Failed to create format file from destination table: !destinationSchema!.!table!
 		)
 
 	Set /a export_success=1
 	if !format_success! EQU 0 (			REM Only attempt if previous step successful
-		if exist %extractPath%%%t.bcp (	REM Skip export if temp file already exists
+		if exist !extractPath!!table!.bcp (	REM Skip export if temp file already exists
 			set /a export_success=0
-			echo INFO: Temp extract file already exists, skipping data export to %%t.bcp
+			echo INFO: Temp extract file already exists, skipping data export to !table!.bcp
 			)
 		for /L %%w in (1,1,5) do ( 		REM retry five times
 			REM Export from Source table to temp file using format file
 			if !export_success! NEQ 0 (
-				bcp "select * from %sourceSchema%.%%t where [Extract_Date_ID] = (select Extract_Date_ID from [CR_LIDA_Presentation].[CR_LIDA].[Extract_Date] where [Most_recent_Extract] = 1)" queryout "%extractPath%%%t.bcp" -S BIDA1-PE01 -d CR_LIDA_Presentation -T -f "%extractPath%%%t_format.xml"
+				bcp "select * from !sourceSchema!.!table! where [Extract_Date_ID] = (select Extract_Date_ID from [CR_LIDA_Presentation].[CR_LIDA].[Extract_Date] where [Most_recent_Extract] = 1)" queryout "!extractPath!!table!.bcp" -S BIDA1-PE01 -d CR_LIDA_Presentation -T -f "!extractPath!!table!_format.xml"
 				if !ERRORLEVEL! EQU 0 (
 					set /a export_success=0
-					echo INFO: Exported from Source table to temp file using format file: %%t.bcp created
+					echo INFO: Exported from Source table to temp file using format file: !table!.bcp created
 					)
 				)
 			)
 		if !export_success! NEQ 0 (
-			echo ERROR: Failed to export from Source table to temp file using format file: %%t.bcp NOT created
+			echo ERROR: Failed to export from Source table to temp file using format file: !table!.bcp NOT created
 			)
 		)
 	
-	echo INFO: Attempting to import from %extractPath%%%t.bcp to %destinationSchema%.%%t
+	echo INFO: Attempting to import from !extractPath!!table!.bcp to !destinationSchema!.!table!
 
 	Set /a import_success=1
 	if !export_success! EQU 0 (			REM Only attempt if previous step successful
 		for /L %%w in (1,1,5) do ( 		REM retry five times
 			REM Import from temp file to destination table
 			if !import_success! NEQ 0 (
-				bcp %destinationSchema%.%%t in "%extractPath%%%t.bcp" -S az-lrdp-p0539v01-db.database.windows.net -d vre-p0539v01-db -G -E -f "%extractPath%%%t_format.xml"
+				bcp !destinationSchema!.!table! in "!extractPath!!table!.bcp" -S az-lrdp-p0539v01-db.database.windows.net -d vre-p0539v01-db -G -E -f "!extractPath!!table!_format.xml"
 				if !ERRORLEVEL! EQU 0 (
 					set /a import_success=0
-					echo INFO: Imported from temp file to destination table: %destinationSchema%.%%t
+					echo INFO: Imported from temp file to destination table: !destinationSchema!.!table!
 					)
 				)
 			)
 		if !import_success! NEQ 0 (
-			echo ERROR: Failed to import from temp file to destination table: %destinationSchema%.%%t
+			echo ERROR: Failed to import from temp file to destination table: !destinationSchema!.!table!
 			)
 		)
 
 	if !import_success! EQU 0 (			REM Only attempt if previous step successful
-		del "%extractPath%%%t_format.xml"
-		echo INFO: %extractPath%%%t_format.xml file deleted.
-		del "%extractPath%%%t.bcp"
-		echo INFO: %extractPath%%%t.bcp file deleted.
+		del "!extractPath!!table!_format.xml"
+		echo INFO: !extractPath!!table!_format.xml file deleted.
+		del "!extractPath!!table!.bcp"
+		echo INFO: !extractPath!!table!.bcp file deleted.
 		)
 	)
 
 REM Delete the folder used to contain the extraction flat files. Will fail if not empty. 
-rmdir "%extractPath%" 
-if not exist "%extractPath%" (
-	echo %extractPath% folder deleted
+rmdir "!extractPath!" 
+if not exist "!extractPath!" (
+	echo !extractPath! folder deleted
 	)
 
 EndLocal
